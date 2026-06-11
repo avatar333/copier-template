@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block page_title %}Users{% endblock %}
+
+{% block content %}
+<section class="card">
+  <div class="section-header">
+    <h2>Users</h2>
+    <a class="primary-button" href="{{ url_for('users.create_user') }}"><i data-lucide="user-plus"></i> Create User</a>
+  </div>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Login Name</th>
+        <th>Name</th>
+        <th>Admin</th>
+        <th>Assign ONLY Production Pets</th>
+        <th>Assign ONLY Non-Production Pets</th>
+        <th>Active</th>
+        <th>Production Pets</th>
+        <th>Non-Production Pets</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{ user.login_name }}</td>
+        <td>{{ user.full_name }}</td>
+        <td>{{ "Yes" if user.is_admin else "No" }}</td>
+        <td>{{ "Yes" if user.assign_only_production_pets else "No" }}</td>
+        <td>{{ "Yes" if user.assign_only_non_production_pets else "No" }}</td>
+        <td>{{ "Yes" if user.is_active else "No" }}</td>
+        <td>{{ user.pets | selectattr('pet_type', 'equalto', 'production') | list | length }}</td>
+        <td>{{ user.pets | selectattr('pet_type', 'equalto', 'non_production') | list | length }}</td>
+        <td class="actions-cell">
+          <a class="secondary-button" href="{{ url_for('users.edit_user', user_id=user.id) }}"><i data-lucide="pencil"></i> Edit</a>
+          <form method="post" action="{{ url_for('users.delete_user', user_id=user.id) }}" data-confirm-delete="Delete this user?">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="danger-button"><i data-lucide="trash-2"></i> Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

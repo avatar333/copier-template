@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pe-forekat-admin
+  namespace: pe-forekat-admin-prod
+  labels:
+    app.kubernetes.io/name: pe-forekat-admin
+    app.kubernetes.io/part-of: pe-forekat-admin
+  annotations:
+    image.openshift.io/triggers: >-
+      [{"from":{"kind":"ImageStreamTag","name":"pe-forekat-admin:latest","namespace":"pe-forekat-admin-prod"},"fieldPath":"spec.template.spec.containers[?(@.name==\"pe-forekat-admin\")].image","pause":"false"}]
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pe-forekat-admin
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  template:
+    metadata:
+      labels:
+        app: pe-forekat-admin
+    spec:
+      containers:
+        - name: pe-forekat-admin
+          image: image-registry.openshift-image-registry.svc:5000/pe-forekat-admin-prod/pe-forekat-admin:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: PORT
+              value: "8080"
+            - name: GUNICORN_TIMEOUT
+              value: "300"
+          volumeMounts:
+            - name: app-config
+              mountPath: /opt/pe-forekat-admin/config.yaml
+              subPath: config.yaml
+              readOnly: true
+      volumes:
+        - name: app-config
+          secret:
+            secretName: pe-forekat-admin-config

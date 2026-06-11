@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block page_title %}Assignment Run {{ latest_run.id }}{% endblock %}
+
+{% block content %}
+<section class="card">
+  <div class="section-header">
+    <h2>Assignment Run {{ latest_run.id }}</h2>
+    <div class="button-row">
+      <a class="secondary-button" href="{{ url_for('main.dashboard') }}"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+      <a class="secondary-button" href="{{ url_for('main.latest_assignment') }}"><i data-lucide="history"></i> Latest</a>
+      {% if current_user.is_admin %}
+      <a class="primary-button" href="{{ url_for('main.generate_assignments', pool_name='non-production') }}"><i data-lucide="shuffle"></i> Generate Non-Production Hosts Assignment</a>
+      <a class="secondary-button" href="{{ url_for('main.generate_assignments', pool_name='production') }}"><i data-lucide="factory"></i> Generate Production Hosts Assignment</a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="summary-grid">
+    <div class="summary-card">
+      <span class="muted">Host pool</span>
+      <strong>{{ pool_label }}</strong>
+      <span class="muted">Excluded hosts: {{ summary.excluded_host_count }}</span>
+      {% if current_user.is_admin %}
+      <form
+        class="export-form"
+        method="post"
+        action="{{ url_for('main.export_assignment_run', run_id=latest_run.id) }}"
+        data-export-form
+      >
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label class="block-label export-field" for="change_request_number">
+          <span>Change Request Number</span>
+          <input
+            id="change_request_number"
+            name="change_request_number"
+            type="text"
+            maxlength="80"
+            autocomplete="off"
+            data-export-change-request
+          >
+        </label>
+        <button class="secondary-button export-button" type="submit">
+          <i data-lucide="file-spreadsheet"></i> Export as .xlsx and Download
+        </button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+  <div class="summary-grid">
+    <div class="summary-card">
+      <span class="muted">Total hosts assigned</span>
+      <strong>{{ summary.total_hosts_assigned }}</strong>
+    </div>
+    <div class="summary-card">
+      <span class="muted">Users</span>
+      <strong>{{ summary.user_count }}</strong>
+    </div>
+    <div class="summary-card">
+      <span class="muted">Min assigned</span>
+      <strong>{{ summary.min_assigned }}</strong>
+    </div>
+    <div class="summary-card">
+      <span class="muted">Max assigned</span>
+      <strong>{{ summary.max_assigned }}</strong>
+    </div>
+    <div class="summary-card">
+      <span class="muted">Difference</span>
+      <strong>{{ summary.difference }}</strong>
+    </div>
+  </div>
+
+  {% if warnings %}
+  <div class="alert-panel">
+    <h3>Warnings</h3>
+    <ul class="plain-list">
+      {% for warning in warnings %}
+      <li>{{ warning }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <div class="assignment-stack wide">
+    {% for row in assignment_rows %}
+    <article class="assignment-card assignment-row">
+      <div class="assignment-user">
+        <h3>
+          {{ row.user.full_name }}
+          {% if row.assign_only_label %}
+          <span class="user-flag">{{ row.assign_only_label }}</span>
+          {% endif %}
+        </h3>
+        <p class="muted">Assigned hosts: {{ row.assignment_count }}</p>
+      </div>
+      <div class="assignment-boxes">
+        <label class="block-label assignment-box">
+          {{ row.pet_label }}
+          <textarea class="readonly-textarea" readonly>{% if row.pets %}{% for pet in row.pets %}{{ pet }}{% if not loop.last %}
+{% endif %}{% endfor %}{% else %}No pets.{% endif %}</textarea>
+        </label>
+        <label class="block-label assignment-box">
+          Assigned hosts
+          <div class="assignment-key" aria-label="Assignment source key">
+            <span class="assignment-key-label">KEY:</span>
+            {% for key_item in assignment_source_key %}
+            <span class="assignment-key-item">
+              <span class="source-dot {{ key_item.css_class }}" aria-hidden="true" title="{{ key_item.title }}"></span>
+              <span>{{ key_item.label }}</span>
+            </span>
+            {% if not loop.last %}<span class="assignment-key-separator">|</span>{% endif %}
+            {% endfor %}
+          </div>
+          <div class="assignment-hosts-list" role="list" aria-label="Assigned hosts">
+            {% if row.assigned_hosts %}
+            {% for host in row.assigned_hosts %}
+            <div class="assignment-host-row" role="listitem" title="{{ host.source_title }}">
+              <span
+                class="source-dot {{ host.source_css_class }}"
+                role="img"
+                aria-label="{{ host.source_aria_label }}"
+                title="{{ host.source_title }}"
+              ></span>
+              <span class="visually-hidden">{{ host.source_label }}</span>
+              <span class="assignment-host-fqdn">{{ host.fqdn }}</span>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="assignment-host-empty">No assigned hosts.</div>
+            {% endif %}
+          </div>
+        </label>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+
+  <details class="prefix-sequence-details">
+    <summary>Prefix Sequence Groups</summary>
+    {% if prefix_sequence_groups %}
+    <div class="table-scroll large-panel">
+      <table class="data-table prefix-groups-table">
+        <thead>
+          <tr>
+            <th>Group</th>
+            <th>Assigned user</th>
+            <th>Host count</th>
+            <th>Hosts</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for group in prefix_sequence_groups %}
+          <tr>
+            <td>{{ group.source_name }}</td>
+            <td>{{ group.user_name }}</td>
+            <td>{{ group.count }}</td>
+            <td>
+              <div class="scroll-panel compact-panel">
+                {% for host in group.hosts %}
+                <div>{{ host }}</div>
+                {% endfor %}
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p>No prefix sequence groups were used in this run.</p>
+    {% endif %}
+  </details>
+</section>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block page_title %}ForeKat Test{% endblock %}
+
+{% block content %}
+<section class="card">
+  <div class="section-header">
+    <h2>ForeKat Connectivity Test</h2>
+    <a class="secondary-button" href="{{ url_for('main.dashboard') }}"><i data-lucide="arrow-left"></i> Back</a>
+  </div>
+  {% if status %}
+    {% if status.error %}
+  <p>{{ status.error }}</p>
+    {% else %}
+  <p>API connectivity test completed.</p>
+  <p class="muted">Foreman hosts: {{ status.host_count }}</p>
+    {% endif %}
+  {% else %}
+  <p>No API status is available.</p>
+  {% endif %}
+  {% if warnings %}
+  <div class="scroll-panel">
+    <ul class="plain-list">
+      {% for warning in warnings %}
+      <li>{{ warning }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

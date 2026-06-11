@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block page_title %}Documentation{% endblock %}
+
+{% block content %}
+<section class="card">
+  <div class="section-header">
+    <div>
+      <h2>Documentation</h2>
+      <p class="muted">How host selection, exclusions, pets, grouping, and assignment balancing work.</p>
+    </div>
+  </div>
+
+  <div class="content-stack">
+    <article class="action-card">
+      <h3><i data-lucide="layers-3"></i> What This App Does</h3>
+      <p>ForeKat Admin is a read-only Foreman/Katello client that fetches host inventory, applies local rules, and assigns hosts to local users for patching runs.</p>
+      <p>The app never writes to Foreman or Katello. It only reads inventory, stores local application data in MariaDB, and renders assignment runs for review and export.</p>
+    </article>
+
+    <article class="action-card">
+      <h3><i data-lucide="network"></i> Host Pools</h3>
+      <p>Assignment runs start by choosing one of two literal Katello Host Collections as the eligible host pool:</p>
+      <ul class="plain-list">
+        <li><strong>Production</strong> for Production runs.</li>
+        <li><strong>Non-Production</strong> for Non-Production runs.</li>
+      </ul>
+      <p>Only hosts in the selected pool can be assigned during that run. Hosts outside the selected pool are ignored before any pets or grouping rules are applied.</p>
+    </article>
+
+    <article class="action-card">
+      <h3><i data-lucide="ban"></i> Host Exclusions</h3>
+      <p>The Host Exclusions List is applied after pool selection and before any assignment work begins.</p>
+      <ul class="plain-list">
+        <li>Excluded hosts are removed from the eligible host pool.</li>
+        <li>Excluded pets are not assigned and produce a warning.</li>
+        <li>Excluded special JBoss hosts are not assigned.</li>
+        <li>Excluded hosts never appear in persisted assignment rows.</li>
+      </ul>
+      <p>If every host in the selected pool is excluded, the run completes with a clear warning instead of assigning an empty or misleading set of hosts.</p>
+    </article>
+
+    <article class="action-card">
+      <h3><i data-lucide="heart"></i> Pets First</h3>
+      <p>Pets always take priority before any grouping or random assignment.</p>
+      <ul class="plain-list">
+        <li>Production runs use only Production Pets.</li>
+        <li>Non-Production runs use only Non-Production Pets.</li>
+        <li>A pet is assigned only if it exists in the selected host pool.</li>
+        <li>Pets outside the selected pool are not assigned and are reported with a warning.</li>
+      </ul>
+      <p>Users marked <code>Assign ONLY Pets</code> stay in the run for their pets, but they are excluded from non-pet prefix groups, special JBoss groups, and random hosts for that pool.</p>
+    </article>
+
+    <article class="action-card">
+      <h3><i data-lucide="shuffle"></i> Prefix Sequence Grouping</h3>
+      <p>After pets are assigned, the engine groups hosts that share a hostname pattern with a two-digit numeric suffix.</p>
+      <ul class="plain-list">
+        <li>The hostname is split at the first dot into the label and domain.</li>
+        <li>The label is split on hyphens.</li>
+        <li>The parser finds tokens that end in exactly two digits and chooses the token that yields the largest contiguous sequence run.</li>
+        <li>If two candidates tie, the leftmost candidate wins.</li>
+        <li>The digits are removed from the chosen token to form the grouping key.</li>
+      </ul>
+      <p>For example, <code>kafka01-stage-bry.platform.is</code>, <code>kafka02-stage-bry.platform.is</code>, and <code>kafka03-stage-bry.platform.is</code> group together, while <code>kafka04-prod-bry.platform.is</code> and <code>kafka04-stage-pkl.platform.is</code> do not join that group because their surrounding tokens change the key.</p>
+      <p>The current configuration uses <strong>min_prefix_group_size = {{ assignment_config.min_prefix_group_size }}</strong> and <strong>prefix_group_randomness_window = {{ assignment_config.prefix_group_randomness_window }}</strong>.</p>
+    </article>
+
+    <article class="action-card">
+      <h3><i data-lucide="shield"></i> Special JBoss Groups</h3>
+      <p>The app has one explicit special-case prefix group for Production and one for Non-Production.</p>
+      <ul class="plain-list">
+        <li>The special hosts are assigned as a single unsplit prefix group when present in the selected pool.</li>
+        <li>If some expected special hosts are missing, the present ones are still grouped and a warning explains what was missing.</li>
+        <li>If a special host is already a pet, pet ownership wins and the special group continues without overriding it.</li>
+      </ul>
+    </article>
+
+    <article class="action-card">
+      <h3><i data-lucide="sliders-horizontal"></i> Balancing and Random Placement</h3>
+      <p>Once pets and prefix groups are handled, the remaining hosts are assigned one by one to the least-loaded eligible user. Ties are broken randomly.</p>
+      <p>The balance metric is total assigned host count, including pets. The assignment flow intentionally keeps the work synchronous so a run can be reviewed immediately after it finishes.</p>
+    </article>
+
+    <article class="action-card">
+      <h3><i data-lucide="file-spreadsheet"></i> Export and History</h3>
+      <p>Assignment runs are stored locally in MariaDB. The Assignment Run page shows per-user pets, assigned hosts, warnings, and grouped prefix-sequence details.</p>
+      <p>The export action builds one spreadsheet per user from the provided Excel template, writes the assigned hostnames into the fixed workbook layout, and returns a downloadable zip archive.</p>
+    </article>
+  </div>
+</section>
+{% endblock %}

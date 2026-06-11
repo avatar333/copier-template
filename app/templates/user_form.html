@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block page_title %}{% if target_user %}Edit User{% else %}Create User{% endif %}{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h2>{% if target_user %}Edit User{% else %}Create User{% endif %}</h2>
+  <form method="post" class="stack-form" data-user-pet-form>
+    {{ form.csrf_token }}
+    <label>
+      {{ form.login_name.label }}
+      {{ form.login_name() }}
+      {% for error in form.login_name.errors %}<span class="error">{{ error }}</span>{% endfor %}
+    </label>
+    <label>
+      {{ form.first_name.label }}
+      {{ form.first_name() }}
+      {% for error in form.first_name.errors %}<span class="error">{{ error }}</span>{% endfor %}
+    </label>
+    <label>
+      {{ form.last_name.label }}
+      {{ form.last_name() }}
+      {% for error in form.last_name.errors %}<span class="error">{{ error }}</span>{% endfor %}
+    </label>
+    <label>
+      {{ form.password.label }}
+      {{ form.password() }}
+      <span class="muted">Leave blank to keep the current password when editing.</span>
+      {% for error in form.password.errors %}<span class="error">{{ error }}</span>{% endfor %}
+    </label>
+    {% if current_user.is_admin %}
+    <label class="checkbox-label">
+      {{ form.is_admin() }}
+      {{ form.is_admin.label.text }}
+    </label>
+    {% for error in form.is_admin.errors %}<span class="error">{{ error }}</span>{% endfor %}
+    <label class="checkbox-label">
+      {{ form.is_active() }}
+      {{ form.is_active.label.text }}
+    </label>
+    {% endif %}
+
+    <section class="pet-manager">
+      <div class="section-header pet-manager-header">
+        <h3>Pets</h3>
+        <span class="muted">Add one or more FQDNs, then use - to remove selected entries from the matching list.</span>
+      </div>
+      <div class="pet-widget-grid">
+        <section class="pet-widget" data-pet-widget>
+          <input type="hidden" name="production_pet_blob" value="{{ form.production_pet_blob.data or '' }}" data-pet-hidden>
+          <div class="pet-entry-row">
+            <label class="block-label pet-entry-field">
+              <span>Production Pets</span>
+              <textarea
+                data-pet-input
+                rows="3"
+                placeholder="host01.example.com&#10;host02.example.com"
+                autocomplete="off"
+                spellcheck="false"
+              ></textarea>
+            </label>
+            <button type="button" class="secondary-button pet-action-button" data-pet-add><i data-lucide="plus"></i></button>
+          </div>
+          <label class="block-label">
+            <span>Current Production Pets</span>
+            <select
+              multiple
+              size="8"
+              class="pet-list"
+              data-pet-list
+              aria-label="Current Production Pets"
+            >
+              {% for pet in production_pet_items %}
+              <option value="{{ pet }}">{{ pet }}</option>
+              {% endfor %}
+            </select>
+          </label>
+          <div class="pet-actions">
+            <button type="button" class="secondary-button" data-pet-remove><i data-lucide="minus"></i> Remove selected</button>
+            <span class="muted">Production-only pet list.</span>
+          </div>
+          <label class="checkbox-label inline-pet-checkbox">
+            {{ form.assign_only_production_pets() }}
+            {{ form.assign_only_production_pets.label.text }}
+          </label>
+          {% for error in form.assign_only_production_pets.errors %}<span class="error">{{ error }}</span>{% endfor %}
+          <div class="pet-status muted" data-pet-status aria-live="polite"></div>
+        </section>
+
+        <section class="pet-widget" data-pet-widget>
+          <input type="hidden" name="non_production_pet_blob" value="{{ form.non_production_pet_blob.data or '' }}" data-pet-hidden>
+          <div class="pet-entry-row">
+            <label class="block-label pet-entry-field">
+              <span>Non-Production Pets</span>
+              <textarea
+                data-pet-input
+                rows="3"
+                placeholder="host01.example.com&#10;host02.example.com"
+                autocomplete="off"
+                spellcheck="false"
+              ></textarea>
+            </label>
+            <button type="button" class="secondary-button pet-action-button" data-pet-add><i data-lucide="plus"></i></button>
+          </div>
+          <label class="block-label">
+            <span>Current Non-Production Pets</span>
+            <select
+              multiple
+              size="8"
+              class="pet-list"
+              data-pet-list
+              aria-label="Current Non-Production Pets"
+            >
+              {% for pet in non_production_pet_items %}
+              <option value="{{ pet }}">{{ pet }}</option>
+              {% endfor %}
+            </select>
+          </label>
+          <div class="pet-actions">
+            <button type="button" class="secondary-button" data-pet-remove><i data-lucide="minus"></i> Remove selected</button>
+            <span class="muted">Non-Production-only pet list.</span>
+          </div>
+          <label class="checkbox-label inline-pet-checkbox">
+            {{ form.assign_only_non_production_pets() }}
+            {{ form.assign_only_non_production_pets.label.text }}
+          </label>
+          {% for error in form.assign_only_non_production_pets.errors %}<span class="error">{{ error }}</span>{% endfor %}
+          <div class="pet-status muted" data-pet-status aria-live="polite"></div>
+        </section>
+      </div>
+      {% for error in pet_blob_errors %}<span class="error">{{ error }}</span>{% endfor %}
+    </section>
+
+    <div class="button-row">
+      {{ form.submit(class_="primary-button") }}
+      <a
+        class="secondary-button"
+        href="{{ url_for('users.list_users') if current_user.is_admin else url_for('main.dashboard') }}"
+      >
+        Cancel
+      </a>
+    </div>
+  </form>
+</section>
+{% endblock %}

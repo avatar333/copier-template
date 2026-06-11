@@ -1,0 +1,20 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: pe-forekat-admin
+  namespace: pe-forekat-admin-prod
+  labels:
+    app.kubernetes.io/name: pe-forekat-admin
+    app.kubernetes.io/part-of: pe-forekat-admin
+  annotations:
+    haproxy.router.openshift.io/timeout: 300s
+spec:
+  host: pe-forekat-admin-prod.apps.ocp-prod.platform.is
+  to:
+    kind: Service
+    name: pe-forekat-admin
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

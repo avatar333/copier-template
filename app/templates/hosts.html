@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block page_title %}Available Hosts{% endblock %}
+
+{% block content %}
+<section class="card">
+  <div class="section-header">
+    <div>
+      <h2>Available Hosts</h2>
+      <p class="muted host-count">Total Hosts: {{ total_hosts }}</p>
+    </div>
+    <a class="secondary-button" href="{{ url_for('main.dashboard') }}"><i data-lucide="arrow-left"></i> Back</a>
+  </div>
+  <form method="post" class="button-row">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button class="primary-button" type="submit"><i data-lucide="refresh-cw"></i> Refresh from ForeKat</button>
+  </form>
+  {% if warnings %}
+  <div class="scroll-panel">
+    <ul class="plain-list">
+      {% for warning in warnings %}
+      <li>{{ warning }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+  {% if hosts %}
+  <div class="table-scroll">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>FQDN</th>
+          <th>Foreman ID</th>
+          <th>Pet owner</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for host in hosts %}
+        <tr>
+          <td>{{ host.fqdn }}</td>
+          <td>{{ host.foreman_id or "" }}</td>
+          <td>{{ host.pet_owner_name or "" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p>No host data loaded yet.</p>
+  {% endif %}
+</section>
+{% endblock %}

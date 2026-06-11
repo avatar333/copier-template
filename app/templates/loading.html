@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<section class="loading-stage" aria-live="polite" role="status">
+  <div class="card loading-card">
+    <div class="loading-hero">
+      <div class="loading-spinner" aria-hidden="true"></div>
+      <div class="loading-copy">
+        <h2>{{ heading }}</h2>
+        <p>{{ message }}</p>
+        {% if action_description %}
+        <p class="muted">{{ action_description }}</p>
+        {% endif %}
+      </div>
+    </div>
+    <form class="loading-form" method="post" action="{{ action_url }}" data-loading-action-form data-loading-delay="180">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    </form>
+  <noscript>
+    <p class="muted">JavaScript is required to continue from this screen.</p>
+  </noscript>
+</div>
+</section>
+<script defer src="{{ url_for('static', filename='js/loading_action.js') }}"></script>
+{% endblock %}

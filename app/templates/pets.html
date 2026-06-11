@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block page_title %}Pets{% endblock %}
+
+{% block content %}
+<section class="card">
+  <div class="section-header">
+    <h2>Pets By User</h2>
+    <a class="secondary-button" href="{{ url_for('main.dashboard') }}"><i data-lucide="arrow-left"></i> Back</a>
+  </div>
+  <div class="assignment-stack wide">
+    {% for user in users %}
+    <article class="assignment-card assignment-row">
+      <div class="assignment-user">
+        <h3>{{ user.full_name }}</h3>
+      </div>
+      <div class="assignment-boxes">
+        <label class="block-label assignment-box">
+          Production Pets
+          <textarea class="readonly-textarea" readonly>{% set production_pets = user.pets | selectattr('pet_type', 'equalto', 'production') | list %}{% if production_pets %}{% for pet in production_pets %}{{ pet.fqdn }}{% if not loop.last %}
+{% endif %}{% endfor %}{% else %}No production pets assigned.{% endif %}</textarea>
+        </label>
+        <label class="block-label assignment-box">
+          Non-Production Pets
+          <textarea class="readonly-textarea" readonly>{% set non_production_pets = user.pets | selectattr('pet_type', 'equalto', 'non_production') | list %}{% if non_production_pets %}{% for pet in non_production_pets %}{{ pet.fqdn }}{% if not loop.last %}
+{% endif %}{% endfor %}{% else %}No non-production pets assigned.{% endif %}</textarea>
+        </label>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

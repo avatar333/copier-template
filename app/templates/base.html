@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ForeKat Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script defer src="{{ url_for('static', filename='js/user_form_pets.js') }}"></script>
+  </head>
+  <body>
+    {% if current_user.is_authenticated %}
+      <div class="app-shell">
+        <aside class="sidebar">
+          <a class="brand" href="{{ url_for('main.dashboard') }}">
+            <span class="brand-mark"><i data-lucide="server-cog"></i></span>
+            <span>
+              <strong>ForeKat Patching Adminstration</strong>
+              <small>Foreman / Katello</small>
+            </span>
+          </a>
+
+          <p class="sidebar-blurb">Automated assignment of hosts to users, for scheduled patching</p>
+
+          <nav class="site-nav" aria-label="Primary navigation">
+            <a class="mode-tile {{ 'active' if request.endpoint == 'main.dashboard' else '' }}" href="{{ url_for('main.dashboard') }}">
+              <i data-lucide="layout-dashboard"></i>
+              <span>Dashboard</span>
+            </a>
+            <a class="mode-tile {{ 'active' if request.endpoint == 'main.hosts' else '' }}" href="{{ url_for('main.hosts') }}">
+              <i data-lucide="server"></i>
+              <span>Available Hosts</span>
+            </a>
+            <a class="mode-tile {{ 'active' if request.endpoint == 'main.pets' else '' }}" href="{{ url_for('main.pets') }}">
+              <i data-lucide="star"></i>
+              <span>Pets</span>
+            </a>
+            <a class="mode-tile {{ 'active' if request.endpoint in ['main.latest_assignment', 'main.view_assignment'] else '' }}" href="{{ url_for('main.latest_assignment') }}">
+              <i data-lucide="list-checks"></i>
+              <span>Latest Assignment</span>
+            </a>
+            <a class="mode-tile {{ 'active' if request.endpoint == 'main.forekat_test' else '' }}" href="{{ url_for('main.forekat_test') }}">
+              <i data-lucide="activity"></i>
+              <span>ForeKat Test</span>
+            </a>
+            <a class="mode-tile {{ 'active' if request.endpoint == 'main.documentation' else '' }}" href="{{ url_for('main.documentation') }}">
+              <i data-lucide="book-open"></i>
+              <span>Documentation</span>
+            </a>
+            {% if current_user.is_admin %}
+            <a class="mode-tile {{ 'active' if request.endpoint and request.endpoint.startswith('users.') else '' }}" href="{{ url_for('users.list_users') }}">
+              <i data-lucide="user-cog"></i>
+              <span>Users</span>
+            </a>
+            {% else %}
+            <a class="mode-tile {{ 'active' if request.endpoint == 'users.edit_user' else '' }}" href="{{ url_for('users.edit_user', user_id=current_user.id) }}">
+              <i data-lucide="user"></i>
+              <span>My Profile</span>
+            </a>
+            {% endif %}
+          </nav>
+
+          <div class="sidebar-footer">
+            <div class="user-chip">
+              <span class="avatar">{{ current_user.first_name[:1]|upper }}</span>
+              <span class="user-chip-name">
+                <strong>{{ current_user.full_name }}</strong>
+                <small>{{ "Admin" if current_user.is_admin else "User" }}</small>
+              </span>
+              <form method="post" action="{{ url_for('auth.logout') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="icon-button" type="submit" title="Log out" aria-label="Log out">
+                  <i data-lucide="log-out"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        </aside>
+
+        <div class="content-shell">
+          <header class="topbar">
+            <div class="breadcrumb">
+              <i data-lucide="boxes"></i>
+              <span>ForeKat</span>
+              <i data-lucide="chevron-right"></i>
+              <strong>{% block page_title %}Dashboard{% endblock %}</strong>
+            </div>
+            <div class="topbar-actions">
+              <span>{{ current_user.full_name }}</span>
+            </div>
+          </header>
+          <main class="page-shell">
+    {% else %}
+      <main class="auth-shell">
+    {% endif %}
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-stack">
+            {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+    {% if current_user.is_authenticated %}
+        </div>
+      </div>
+    {% endif %}
+    <script>
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    </script>
+  </body>
+</html>

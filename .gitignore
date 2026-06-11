@@ -1,0 +1,15 @@
+.*swp*
+.codex-resume
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+instance/
+exports/
+config.yaml
+db_details.txt
+pat.txt

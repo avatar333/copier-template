@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="card narrow-card">
+  <h2>Log in</h2>
+  {% if user_count == 0 %}
+  <p>No local users exist yet. Create the first admin with `flask --app run.py create-admin --login-name <login> --first-name <name> --last-name <name> --password <password>`.</p>
+  {% endif %}
+  <form method="post" class="stack-form">
+    {{ form.hidden_tag() }}
+    <label>
+      {{ form.login_name.label }}
+      {{ form.login_name() }}
+      {% for error in form.login_name.errors %}<span class="error">{{ error }}</span>{% endfor %}
+    </label>
+    <label>
+      {{ form.password.label }}
+      {{ form.password() }}
+      {% for error in form.password.errors %}<span class="error">{{ error }}</span>{% endfor %}
+    </label>
+    {{ form.submit(class_="primary-button") }}
+  </form>
+</section>
+{% endblock %}
