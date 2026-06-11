@@ -11,21 +11,16 @@ This file preserves the design and implementation context that began with the pr
    - `Copier` was chosen as the best long-lived template mechanism.
 2. Handoff packaging:
    - You asked to put the starter in a subdirectory here so it could be copied to a new location, turned into a git repository, and continued in a new chat.
-   - A self-contained snapshot was created under `copier-template/`.
-3. Application context that should carry forward:
-   - The dark-blue dashboard and sidebar layout
-   - The assignment-generation loading page
-   - The documentation page explaining assignment logic
-   - Pool-based assignments using `Production` and `Non-Production`
-   - Host exclusions filtering before assignment
-   - Pets-first handling
-   - Prefix-sequence grouping
-   - Special JBoss groups
-   - Export, OCP deployment, and runtime config conventions
+   - The first snapshot included the full ForeKat app, but you later narrowed the requirement to the UI framework only.
+3. UI framework scope:
+   - Keep the dark-blue dashboard and sidebar layout.
+   - Keep the loading page pattern and centered spinner behavior.
+   - Keep the documentation page as an example of the same visual system applied to explanatory content.
+   - Keep the reusable template shell and stylesheet.
+   - Exclude backend, deployment, database, and ForeKat-specific logic from the starter snapshot.
 4. Operational context:
-   - The app remains read-only toward Foreman/Katello
-   - Runtime config is still provided via `config.yaml`
-   - The container and OCP deployment use longer timeouts for synchronous assignment generation
+   - The starter should be easy to copy into a new directory and initialized as a fresh git project.
+   - The resulting project should use the included templates and stylesheet as the visual source of truth.
 
 ## Summary Of The Decisions
 
@@ -36,44 +31,31 @@ This file preserves the design and implementation context that began with the pr
    - the dark blue theme in `styles.css`
    - loading-page behavior
    - a dashboard shell
-   - the docs/runbook structure
-   - the OCP/container deployment files
+   - the documentation page
+   - the login page
 4. A `CONTEXT.md` file should preserve the design and operational decisions from this conversation.
 5. The starter should be easy to copy into a new directory, then initialized as a fresh git project.
 
 ## Key Follow-Up Decisions
 
-- The `Documentation` page was added to the sidebar to explain the assignment logic in-app.
+- The `Documentation` page was added to the sidebar to show how the same UI shell handles rich instructional content.
 - The loading page was simplified to a centered spinner and auto-submit flow.
-- The OpenShift deployment uses:
-  - an `ImageStream`
-  - a Kubernetes `Deployment`
-  - a mounted Secret for `config.yaml`
-  - longer Gunicorn and route timeouts for synchronous assignment generation
-- The app remains read-only toward Foreman/Katello.
-- Assignment rules are still:
-  - pool selection
-  - exclusions
-  - pets first
-  - prefix-sequence groups
-  - special JBoss groups
-  - random remainder
+- The template should remain focused on presentation-layer reuse, not the ForeKat backend.
+- The included files should be treated as a visual starter, not a running application by themselves.
 
 ## Important Runtime Notes
 
-- `config.yaml` must be present or mounted.
-- The OCP version uses a Secret named `pe-forekat-admin-config`.
-- Gunicorn timeout was increased to support long ForeKat inventory fetches.
-- The OpenShift route timeout was also increased.
+- There are no runtime secrets or deployment assumptions in the trimmed starter.
+- Any new project using this starter will need its own backend wiring and configuration.
 
 ## What To Carry Into The New Repository
 
-- The template README and runbook
+- The template README
 - The layout and CSS in `app/templates/base.html` and `app/static/styles.css`
 - The loading flow
 - The documentation page
-- The deployment and runtime notes
+- The login page
 
 ## Next Chat Seed
 
-When continuing in a new chat, point Codex at the copied starter directory and say that this is the reusable Copier-style scaffold built from the ForeKat Admin UI and deployment conventions.
+When continuing in a new chat, point Codex at the copied starter directory and say that this is the reusable Copier-style UI scaffold built from the ForeKat Admin look and feel.

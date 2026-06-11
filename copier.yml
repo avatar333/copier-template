@@ -1,5 +1,5 @@
 _min_copier_version: "9.0"
-project_name: ForeKat Admin Starter
-project_slug: forekat-admin-starter
-app_title: ForeKat Admin Starter
-description: Reusable Flask starter with the ForeKat Admin layout, docs, deployment, and runbook conventions
+project_name: UI Framework Starter
+project_slug: ui-framework-starter
+app_title: UI Framework Starter
+description: Reusable UI starter with the ForeKat Admin layout, templates, and visual conventions
