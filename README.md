@@ -1,8 +1,32 @@
-# Copier UI Framework Starter
+# [[ project_name ]]
 
-This directory is a self-contained UI framework snapshot. Copy it to a new location, initialize a new git repository there, and use it as the starting point for a new Flask UI with the same dark-blue look and feel.
+This is a Copier template for a Flask UI starter with the same dark-blue shell, cards, sidebar, and loading flow as the original snapshot.
 
-## What This Starter Is For
+## Template Variables
+
+- `project_name`: Human-readable application name used in titles and headings.
+- `project_slug`: Slug for the generated repository or package name.
+- `route_host`: Hostname or host:port where the generated app will be served.
+- `namespace`: Flask blueprint namespace used in `url_for()` and endpoint checks.
+
+## How To Use It
+
+1. Install Copier if you do not already have it.
+2. Render the template into a new directory:
+
+   ```bash
+   copier copy path/to/copier-template path/to/new-project \
+     --data project_name="My Admin" \
+     --data project_slug="my-admin" \
+     --data route_host="localhost:5000" \
+     --data namespace="main"
+   ```
+
+3. Initialize the rendered output as its own git repository if needed.
+4. Wire the templates into your Flask app or equivalent backend.
+5. Keep `app/templates/base.html` and `app/static/styles.css` as the visual source of truth.
+
+## What This Template Includes
 
 - Shared dark-blue dashboard styling
 - Sidebar, card, table, and loading-page layout
@@ -10,21 +34,13 @@ This directory is a self-contained UI framework snapshot. Copy it to a new locat
 - Documentation page styling and content patterns
 - Login-page presentation
 
-## What This Starter Does Not Include
+## What This Template Excludes
 
-- ForeKat-specific backend services
+- Backend services specific to any previous project
 - Database models or migrations
 - Assignment generation logic
 - Export logic
 - OpenShift manifests or runtime bootstrap code
-
-## How To Use It
-
-1. Copy this directory to a new location.
-2. Initialize a new git repository there.
-3. Keep `app/templates/base.html` and `app/static/styles.css` as the visual source of truth.
-4. Wire the templates into your own Flask app or equivalent backend.
-5. Continue the next conversation from the notes in `CONTEXT.md`.
 
 ## Design Notes
 
@@ -35,6 +51,6 @@ This directory is a self-contained UI framework snapshot. Copy it to a new locat
 
 ## Where To Start
 
-- Read `CONTEXT.md` for the conversation summary.
+- Read `CONTEXT.md` for the design handoff summary.
 - Start from `app/templates/base.html` and `app/static/styles.css` if you want the same UI feel in a new feature.
 - Use `app/templates/login.html`, `dashboard.html`, and `loading.html` as examples of the common page patterns.

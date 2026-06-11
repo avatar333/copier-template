@@ -1,8 +1,6 @@
 # Context Handoff
 
-This file preserves the design and implementation context that began with the prompt:
-
-> I really like the page layout and the CSS used. How would you supply a reusable framework and in what form, so that I can have a drop-in suite I can place in an empty project directory and develop a site with all this context available for the same look and feel?
+This file preserves the design and implementation context for the Copier template in this directory.
 
 ## Conversation Timeline
 
@@ -17,7 +15,7 @@ This file preserves the design and implementation context that began with the pr
    - Keep the loading page pattern and centered spinner behavior.
    - Keep the documentation page as an example of the same visual system applied to explanatory content.
    - Keep the reusable template shell and stylesheet.
-   - Exclude backend, deployment, database, and ForeKat-specific logic from the starter snapshot.
+   - Exclude backend, deployment, database, and any previous app-specific logic from the starter snapshot.
 4. Operational context:
    - The starter should be easy to copy into a new directory and initialized as a fresh git project.
    - The resulting project should use the included templates and stylesheet as the visual source of truth.
@@ -34,14 +32,15 @@ This file preserves the design and implementation context that began with the pr
    - the documentation page
    - the login page
 4. A `CONTEXT.md` file should preserve the design and operational decisions from this conversation.
-5. The starter should be easy to copy into a new directory, then initialized as a fresh git project.
+5. The starter should be easy to render from Copier, then initialized as a fresh git project.
 
 ## Key Follow-Up Decisions
 
 - The `Documentation` page was added to the sidebar to show how the same UI shell handles rich instructional content.
 - The loading page was simplified to a centered spinner and auto-submit flow.
-- The template should remain focused on presentation-layer reuse, not the ForeKat backend.
+- The template should remain focused on presentation-layer reuse, not the backend of any prior project.
 - The included files should be treated as a visual starter, not a running application by themselves.
+- Copier variables now parameterize the generated project name, slug, route host, and blueprint namespace.
 
 ## Important Runtime Notes
 
@@ -58,4 +57,4 @@ This file preserves the design and implementation context that began with the pr
 
 ## Next Chat Seed
 
-When continuing in a new chat, point Codex at the copied starter directory and say that this is the reusable Copier-style UI scaffold built from the ForeKat Admin look and feel.
+When continuing in a new chat, point Codex at the rendered starter directory and say that it is the reusable Copier-style UI scaffold generated from this template.

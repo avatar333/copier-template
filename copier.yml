@@ -1,5 +1,22 @@
 _min_copier_version: "9.0"
-project_name: UI Framework Starter
-project_slug: ui-framework-starter
-app_title: UI Framework Starter
-description: Reusable UI starter with the ForeKat Admin layout, templates, and visual conventions
+_envops:
+  variable_start_string: "[["
+  variable_end_string: "]]"
+  block_start_string: "[%"
+  block_end_string: "%]"
+project_name:
+  type: str
+  default: UI Framework Starter
+  help: Human-readable project name used in titles and headings.
+project_slug:
+  type: str
+  default: ui-framework-starter
+  help: Repository or package slug for the generated project.
+route_host:
+  type: str
+  default: localhost:5000
+  help: Hostname or host:port where the generated app will be routed.
+namespace:
+  type: str
+  default: main
+  help: Flask blueprint namespace used by the templates.

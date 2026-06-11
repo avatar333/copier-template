@@ -6,8 +6,8 @@
 <section class="card">
   <div class="page-heading">
     <div>
-      <h1>ForeKat Assignments - Admin</h1>
-      <p class="muted">Production and Non-Production host balancing across local users.</p>
+      <h1>[[ project_name ]]</h1>
+      <p class="muted">A reusable Flask UI shell with dashboard cards, navigation, and content-page patterns.</p>
     </div>
   </div>
   {% if schema_warning %}
@@ -30,43 +30,43 @@
   <div class="dashboard-grid">
     <article class="action-card">
       <h3><i data-lucide="server"></i> Hosts Management</h3>
-      <p>Functions for ForeKat host processing</p>
+      <p>Example action area for the main application workflow.</p>
       <div class="button-stack">
-        <a class="primary-button wrapped-button" href="{{ url_for('main.hosts') }}"><i data-lucide="list"></i> Display All Available Hosts</a>
-        <a class="secondary-button wrapped-button" href="{{ url_for('main.host_exclusions') }}"><i data-lucide="ban"></i> Host Exclusions List</a>
+        <a class="primary-button wrapped-button" href="{{ url_for('[[ namespace ]].hosts') }}"><i data-lucide="list"></i> Display All Available Hosts</a>
+        <a class="secondary-button wrapped-button" href="{{ url_for('[[ namespace ]].host_exclusions') }}"><i data-lucide="ban"></i> Host Exclusions List</a>
       </div>
     </article>
     <article class="action-card">
       <h3><i data-lucide="star"></i> Pets By User</h3>
-      <p>Review pet ownership by local app user in a scrollable summary.</p>
-      <a class="secondary-button" href="{{ url_for('main.pets') }}"><i data-lucide="list-tree"></i> Display Pets by User</a>
+      <p>Example card for a secondary content view.</p>
+      <a class="secondary-button" href="{{ url_for('[[ namespace ]].pets') }}"><i data-lucide="list-tree"></i> Display Pets by User</a>
     </article>
     <article class="action-card">
       <h3><i data-lucide="list-checks"></i> Latest Assignment</h3>
-      <p>Open the newest persisted assignment run and review balance details.</p>
-      <a class="secondary-button" href="{{ url_for('main.latest_assignment') }}"><i data-lucide="arrow-right"></i> View Latest Assignment</a>
+      <p>Example card for a review or detail page.</p>
+      <a class="secondary-button" href="{{ url_for('[[ namespace ]].latest_assignment') }}"><i data-lucide="arrow-right"></i> View Latest Assignment</a>
     </article>
     {% if current_user.is_admin %}
     <article class="action-card">
       <h3><i data-lucide="shuffle"></i> Generate Pool Assignments</h3>
-      <p>Run the balanced assignment algorithm for the Production or Non-Production host pool and persist a new assignment run.</p>
+      <p>Example admin-only card for an action that creates new records.</p>
       <div class="button-stack">
-        <a class="primary-button wrapped-button" href="{{ url_for('main.generate_assignments', pool_name='non-production') }}"><i data-lucide="shuffle"></i> Generate Non-Production Hosts Assignment</a>
-        <a class="secondary-button wrapped-button" href="{{ url_for('main.generate_assignments', pool_name='production') }}"><i data-lucide="factory"></i> Generate Production Hosts Assignment</a>
+        <a class="primary-button wrapped-button" href="{{ url_for('[[ namespace ]].generate_assignments', pool_name='non-production') }}"><i data-lucide="shuffle"></i> Generate Non-Production Hosts Assignment</a>
+        <a class="secondary-button wrapped-button" href="{{ url_for('[[ namespace ]].generate_assignments', pool_name='production') }}"><i data-lucide="factory"></i> Generate Production Hosts Assignment</a>
       </div>
     </article>
     <article class="action-card">
       <h3><i data-lucide="user-cog"></i> Manage Users</h3>
-      <p>Create, edit, and delete local application users.</p>
+      <p>Example admin management area for a user admin screen.</p>
       <a class="secondary-button" href="{{ url_for('users.list_users') }}"><i data-lucide="users"></i> Manage Users</a>
     </article>
     {% endif %}
   </div>
   <p class="dashboard-note">
     {% if latest_run %}
-      Latest assignment run ID: {{ latest_run.id }}. Source host count: {{ latest_run.host_count }}.
+      Latest record ID: {{ latest_run.id }}. Source count: {{ latest_run.host_count }}.
     {% else %}
-      No assignment runs have been generated yet.
+      No records have been generated yet.
     {% endif %}
   </p>
 </section>
